@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stay Type Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<main class="wrap">
+  <header class="hero">
+    <h1>What kind of stay is this listing?</h1>
+    <p>Describe a New York Airbnb and the model tells you if it is an entire home, a private room, or a shared room.</p>
+  </header>
+
+  <div class="presets" role="group" aria-label="Quick examples">
+    <span>Try an example:</span>
+    <button type="button" data-preset="loft">Manhattan loft</button>
+    <button type="button" data-preset="room">Brooklyn room</button>
+    <button type="button" data-preset="bunk">Queens bunk</button>
+  </div>
+
+  <div class="grid">
+    <form id="form" class="panel" novalidate>
+      <fieldset>
+        <legend>Where is it?</legend>
+        <label>Borough
+          <select name="neighbourhood_group" required>
+            <option>Manhattan</option><option>Brooklyn</option><option>Queens</option>
+            <option>Bronx</option><option>Staten Island</option>
+          </select>
+        </label>
+        <label>Neighbourhood
+          <input name="neighbourhood" list="nbList" placeholder="Start typing, e.g. Chelsea" autocomplete="off" required>
+          <datalist id="nbList"></datalist>
+        </label>
+        <label>Latitude <input name="latitude" type="number" step="any" min="-90" max="90" required></label>
+        <label>Longitude <input name="longitude" type="number" step="any" min="-180" max="180" required></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Booking rules</legend>
+        <label>Price per night ($) <input name="price" type="number" step="any" min="1" required></label>
+        <label>Minimum nights <input name="minimum_nights" type="number" min="1" max="365" required></label>
+        <label class="wide">Days available this year
+          <div class="range"><input name="availability_365" type="range" min="0" max="365" value="180"><output id="availOut">180</output></div>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Host and reviews</legend>
+        <label>Host name <input name="host_name" placeholder="Optional" value="Unknown"></label>
+        <label>Listings by this host <input name="calculated_host_listings_count" type="number" min="0" required></label>
+        <label>Total reviews <input name="number_of_reviews" type="number" min="0" required></label>
+        <label>Reviews per month <input name="reviews_per_month" type="number" step="any" min="0" required></label>
+      </fieldset>
+
+      <details class="api">
+        <summary>API address</summary>
+        <input id="apiUrl" value="http://127.0.0.1:8000" aria-label="API base URL">
+      </details>
+
+      <button id="go" class="go" type="submit"><span class="label">Predict room type</span><span class="spin" aria-hidden="true"></span></button>
+    </form>
+
+    <section class="panel result" id="result" aria-live="polite">
+      <div class="empty" id="empty">
+        <div class="bulb" aria-hidden="true"></div>
+        <h2>No prediction yet</h2>
+        <p>Fill in the listing or pick an example, then press Predict.</p>
+      </div>
+      <div class="out" id="out" hidden>
+        <div class="verdict" id="verdict">
+          <span class="icon" id="icon"></span>
+          <div><small>The model says</small><h2 id="winner"></h2></div>
+          <strong class="big" id="bigPct"></strong>
+        </div>
+        <p class="blurb" id="blurb"></p>
+        <ul class="bars" id="bars"></ul>
+      </div>
+      <p class="error" id="error" hidden></p>
+    </section>
+  </div>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
